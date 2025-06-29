@@ -1,5 +1,10 @@
 <template>
-  <v-container>
+  <EmptyState
+      v-if="movies.length === 0"
+      text="Não foram encontrados resultados para sua busca."
+      icon="mdi-magnify-close"
+  />
+  <v-container v-else>
     <v-row
       dense
       justify="center"
@@ -17,6 +22,9 @@
       </v-col>
     </v-row>
   </v-container>
+  <div class="text-center d-flex flex-column align-center justify-center fill-height" v-if="loading">
+    <v-progress-circular indeterminate color="blue" :size="80"></v-progress-circular>
+  </div>
 </template>
 
 
@@ -24,6 +32,7 @@
 import { useStore } from 'vuex'
 import MovieCard from '@/components/MovieCard.vue'
 import {onMounted, onBeforeUnmount, ref, computed} from "vue"
+import EmptyState from "@/components/EmptyState.vue";
 const store = useStore()
 
 onMounted(() => {

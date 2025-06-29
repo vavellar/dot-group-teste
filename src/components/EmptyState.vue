@@ -2,15 +2,17 @@
   <v-container
     class="text-center d-flex flex-column align-center justify-center fill-height"
   >
-    <v-icon color="grey" size="48">mdi-cart-off</v-icon>
+    <v-icon color="grey" size="48">{{ icon }}</v-icon>
     <p class="text-subtitle-1 mt-2">
-      Seu carrinho está vazio.
+      {{ text }}
     </p>
   </v-container>
 </template>
 
 <script setup>
-import {computed} from "vue";
-import store from "@/store/index.js";
 
+defineProps({
+  text: { type: String },
+  icon: { type: String }
+})
 </script>

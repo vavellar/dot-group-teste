@@ -25,6 +25,7 @@
 <script setup>
 import {computed, ref, watch} from "vue";
 import store from "@/store/index.js";
+import {useBodyScroll} from "@/composables/useBodyScroll.js";
 
 const isCartOpen = ref(false)
 const isFavoritesOpen = ref(false)
@@ -32,15 +33,22 @@ const isFavoritesOpen = ref(false)
 watch(() => isCartOpen.value, (value) => {
   if (value) {
     isFavoritesOpen.value = false
+    disableScroll()
+  } else {
+    enableScroll()
   }
 })
 
 watch(() => isFavoritesOpen.value, (value) => {
   if (value) {
     isCartOpen.value = false
+    disableScroll()
+  } else {
+    enableScroll()
   }
 })
 
+const { disableScroll, enableScroll } = useBodyScroll()
 
 const show = computed({
   get: () => store.state.snackbar.show,
@@ -54,3 +62,19 @@ const timeout = computed(() => store.state.snackbar.timeout)
 const location = computed(() => store.state.snackbar.location)
 
 </script>
+
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.cart-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 0.1fr 1fr 0.2fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+</style>

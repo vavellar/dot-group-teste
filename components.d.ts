@@ -9,7 +9,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     CartDrawer: typeof import('./src/components/CartDrawer.vue')['default']
-    EmptyCart: typeof import('./src/components/EmptyCart.vue')['default']
+    EmptyCart: typeof import('./src/components/EmptyState.vue')['default']
+    EmptyState: typeof import('./src/components/EmptyState.vue')['default']
     FavoritesDrawer: typeof import('./src/components/FavoritesDrawer.vue')['default']
     Header: typeof import('./src/components/Header.vue')['default']
     MovieCard: typeof import('./src/components/MovieCard.vue')['default']

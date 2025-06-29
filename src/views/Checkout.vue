@@ -1,7 +1,10 @@
 <template>
   <v-container>
     <div v-if="cartItems.length === 0">
-      <EmptyCart />
+      <EmptyState
+          text="Não há nenhum item no carrinho."
+          icon="mdi-cart-off"
+      />
       <div class="d-flex justify-center">
         <v-btn
           class="mt-4"
@@ -128,7 +131,7 @@
           </div>
         </v-sheet>
       </v-col>
-      <v-col>
+      <v-col class="cart-grid">
         <v-sheet class="pa-2 ma-2">
           <v-container>
             <v-row class="align-center font-weight-bold text-grey-darken-2 pb-3">
@@ -139,18 +142,28 @@
             </v-row>
 
             <v-divider class="mb-2"></v-divider>
-
-            <v-row v-for="item in cartItems" :key="item.id" class="align-center">
-              <v-col cols="2">
-                <v-img :src="getPosterUrl(item.backdrop_path)" rounded height="100" width="100"/>
-              </v-col>
-              <v-col cols="2" class="text-left">{{ item.title }}</v-col>
-              <v-col cols="2" class="text-center">{{ item.quantity }}</v-col>
-              <v-col cols="3" class="text-right">{{ formatToBRL(item.price * item.quantity) }}</v-col>
-              <v-btn icon @click="removeItem(item.id)" size="x-small">
-                <v-icon color="red">mdi-delete</v-icon>
-              </v-btn>
-            </v-row>
+            <div class="grid-content">
+              <v-row v-for="item in cartItems" :key="item.id" class="align-center">
+                <v-col cols="2">
+                  <v-img :src="getPosterUrl(item.backdrop_path)" rounded height="100" width="100"/>
+                </v-col>
+                <v-col cols="2" class="text-left">{{ item.title }}</v-col>
+                <v-col cols="2" class="text-center">{{ item.quantity }}</v-col>
+                <v-col cols="3" class="text-right">{{ formatToBRL(item.price * item.quantity) }}</v-col>
+                <v-btn
+                    icon
+                    @click="removeItem(item.id)"
+                    size="x-small"
+                    class="mx-1"
+                >
+                  <v-icon color="red">mdi-delete</v-icon>
+                  <v-tooltip
+                      activator="parent"
+                      location="top"
+                  >Remover do carrinho</v-tooltip>
+                </v-btn>
+              </v-row>
+            </div>
           </v-container>
           <v-divider class="mb-2"></v-divider>
           <div class="d-flex justify-lg-space-between px-4">
@@ -174,7 +187,7 @@
 </template>
 <script setup>
 
-import {computed, ref} from "vue";
+import {computed, onBeforeMount, onBeforeUnmount, onMounted, ref} from "vue";
 import {formatToBRL} from "../utils/index.js";
 import {useRouter} from "vue-router";
 import {useStore} from "vuex";
@@ -182,6 +195,8 @@ import useVuelidate from "@vuelidate/core";
 import {email, helpers, maxLength, minLength, required} from "@vuelidate/validators";
 import { vMaska } from "maska/vue"
 import Swal from "sweetalert2";
+import EmptyState from "@/components/EmptyState.vue";
+import {useBodyScroll} from "@/composables/useBodyScroll.js";
 
 const store = useStore()
 
@@ -252,4 +267,28 @@ const getPosterUrl = (path) =>
   path ? `https://image.tmdb.org/t/p/w500${path}` : 'https://via.placeholder.com/500x750?text=No+Image'
 
 const router = useRouter()
+const { disableScroll, enableScroll } = useBodyScroll()
+
+onBeforeMount(() => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+})
+
+onMounted(() => {
+  disableScroll()
+})
+
+onBeforeUnmount(() => {
+  enableScroll()
+})
 </script>
+
+<style scoped>
+.grid-content {
+  height: 50vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+</style>

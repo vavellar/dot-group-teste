@@ -2,7 +2,7 @@
   <v-app-bar app color="teal-lighten-4">
     <div style="width: 100%" class="d-flex align-center justify-space-between fill-height">
       <div class="d-flex align-center">
-        <h3 class="ml-8">LOGO</h3>
+        <v-btn class="ml-8" @click="router.push('/')">LOGO</v-btn>
       </div>
 
       <div class="d-flex align-center flex-grow-1 justify-center px-4">
@@ -52,7 +52,7 @@
 import {computed, ref, watch} from "vue";
 import {useStore} from "vuex";
 import {debounce} from "lodash";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 
 const store = useStore()
 const cartCount = computed(() => store.getters['cart/itemCount'])
@@ -60,6 +60,7 @@ const favoritesCount = computed(() => store.getters['favorites/favoritesCount'])
 
 const search = ref('')
 const route = useRoute()
+const router = useRouter()
 
 const searchMovies = () => {
   if (search.value.trim()) {

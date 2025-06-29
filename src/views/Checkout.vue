@@ -25,6 +25,7 @@
                 :error="v$.nomeCompleto.$error"
                 :error-messages="v$.nomeCompleto.$errors.map(e => e.$message)"
                 label="Nome Completo"
+                :clearable="true"
                 v-model="form.nomeCompleto"
                 @blur="v$.nomeCompleto.$touch()"
             />
@@ -35,6 +36,7 @@
                   <v-text-field
                       variant="outlined"
                       bg-color="white"
+                      :clearable="true"
                       :error="v$.cpf.$error"
                       :error-messages="v$.cpf.$errors.map(e => e.$message)"
                       label="CPF"
@@ -47,6 +49,7 @@
               <v-col>
                 <v-sheet class="py-2 my-2">
                   <v-text-field
+                      :clearable="true"
                       variant="outlined"
                       bg-color="white"
                       :error="v$.celular.$error"
@@ -63,6 +66,7 @@
             <v-text-field
                 variant="outlined"
                 bg-color="white"
+                :clearable="true"
                 :error="v$.email.$error"
                 :error-messages="v$.email.$errors.map(e => e.$message)"
                 label="E-mail"
@@ -74,13 +78,22 @@
               <v-col>
                 <v-sheet class="py-2 my-2">
                   <v-text-field
+                      :clearable="true"
                       variant="outlined"
                       bg-color="white"
+                      @click:clear="() => {
+                        form.endereco = null
+                        form.cidade = null
+                        form.estado = null
+                      }"
                       :error="v$.cep.$error"
                       :error-messages="v$.cep.$errors.map(e => e.$message)"
                       label="CEP"
                       v-maska="'#####-###'"
-                      @blur="v$.cep.$touch()"
+                      @blur="() => {
+                        v$.cep.$touch()
+                        getCepData()
+                      }"
                       v-model="form.cep"
                   />
                 </v-sheet>
@@ -88,6 +101,7 @@
               <v-col>
                 <v-sheet class="py-2 my-2">
                   <v-text-field
+                      :clearable="true"
                       variant="outlined"
                       bg-color="white"
                       :error="v$.endereco.$error"
@@ -104,6 +118,7 @@
               <v-col>
                 <v-sheet class="py-2 my-2">
                   <v-text-field
+                      :clearable="true"
                       variant="outlined"
                       bg-color="white"
                       :error="v$.cidade.$error"
@@ -117,6 +132,7 @@
               <v-col>
                 <v-sheet class="py-2 my-2">
                   <v-text-field
+                      :clearable="true"
                       variant="outlined"
                       bg-color="white"
                       :error="v$.estado.$error"
@@ -187,7 +203,7 @@
 </template>
 <script setup>
 
-import {computed, onBeforeMount, onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, onBeforeMount, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {formatToBRL} from "../utils/index.js";
 import {useRouter} from "vue-router";
 import {useStore} from "vuex";
@@ -196,7 +212,8 @@ import {email, helpers, maxLength, minLength, required} from "@vuelidate/validat
 import { vMaska } from "maska/vue"
 import Swal from "sweetalert2";
 import EmptyState from "@/components/EmptyState.vue";
-import {useBodyScroll} from "@/composables/useBodyScroll.js";
+import {getAddress} from "@/services/CepService.js";
+import { cpf as cpfValidatorLib } from 'cpf-cnpj-validator'
 
 const store = useStore()
 
@@ -218,16 +235,38 @@ const form = ref({
   estado: ''
 })
 
+
+const getCepData = async () => {
+  if (form.value.cep.length === 9) {
+    const { data } = await getAddress(form.value.cep)
+    form.value.endereco = data.logradouro
+    form.value.estado = data.estado
+    form.value.cidade = data.localidade
+  } else {
+    form.value.endereco = null
+    form.value.estado = null
+    form.value.cidade = null
+  }
+}
+
+const cpfValid = helpers.withMessage(
+    'CPF inválido',
+    (value) => cpfValidatorLib.isValid(value || '')
+)
+
 const rules = {
   nomeCompleto: { required: helpers.withMessage('Nome é obrigatório', required) },
   cpf: {
     required: helpers.withMessage('CPF é obrigatório', required),
-    minLength: helpers.withMessage('CPF deve ter 11 dígitos', minLength(14)),
-    maxLength: helpers.withMessage('CPF deve ter 11 dígitos', maxLength(14)),
+    isValid: cpfValid,
   },
   celular: { required: helpers.withMessage('Celular é obrigatório', required) },
   email: { required: helpers.withMessage('E-mail é obrigatório', required), email: helpers.withMessage('E-mail inválido', email) },
-  cep: { required: helpers.withMessage('CEP é obrigatório', required) },
+  cep: {
+    required: helpers.withMessage('CEP é obrigatório', required),
+    minLength: helpers.withMessage('CEP deve ter 8 dígitos', minLength(9)),
+    maxLength: helpers.withMessage('CEP deve ter 8 dígitos', maxLength(9)),
+  },
   endereco: { required: helpers.withMessage('Endereço é obrigatório', required) },
   cidade: { required: helpers.withMessage('Cidade é obrigatória', required) },
   estado: { required: helpers.withMessage('Estado é obrigatório', required) },
@@ -267,7 +306,6 @@ const getPosterUrl = (path) =>
   path ? `https://image.tmdb.org/t/p/w500${path}` : 'https://via.placeholder.com/500x750?text=No+Image'
 
 const router = useRouter()
-const { disableScroll, enableScroll } = useBodyScroll()
 
 </script>
 

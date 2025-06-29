@@ -8,6 +8,7 @@ vue-router: Gerenciamento de rotas em aplicações Vue 3.
 axios: Cliente HTTP para requisições a APIs.
 @vuelidate/core & @vuelidate/validators: Validação de formulários reativa no Vue.
 maska: Máscaras de input (ex.: telefone, CPF).
+cpf-cnpj-validator: Para validação de cpf
 
 Instruçoes para rodar o projeto localmente:
 - Instalação das dependências: npm install

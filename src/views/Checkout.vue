@@ -17,79 +17,110 @@
           <h3>Finalizar compra</h3>
           <div class="mt-4">
             <v-text-field
-              variant="outlined"
-              bg-color="white"
-              :hide-details="true"
-              label="Nome Completo"
+                variant="outlined"
+                bg-color="white"
+                :error="v$.nomeCompleto.$error"
+                :error-messages="v$.nomeCompleto.$errors.map(e => e.$message)"
+                label="Nome Completo"
+                v-model="form.nomeCompleto"
+                @blur="v$.nomeCompleto.$touch()"
             />
+
             <v-row no-gutters>
               <v-col>
                 <v-sheet class="py-2 my-2">
                   <v-text-field
-                    variant="outlined"
-                    bg-color="white"
-                    :hide-details="true"
-                    label="CPF"
+                      variant="outlined"
+                      bg-color="white"
+                      :error="v$.cpf.$error"
+                      :error-messages="v$.cpf.$errors.map(e => e.$message)"
+                      label="CPF"
+                      v-maska="'###-###-###-##'"
+                      @blur="v$.cpf.$touch()"
+                      v-model="form.cpf"
                   />
                 </v-sheet>
               </v-col>
               <v-col>
                 <v-sheet class="py-2 my-2">
                   <v-text-field
-                    variant="outlined"
-                    bg-color="white"
-                    :hide-details="true"
-                    label="Celular"
+                      variant="outlined"
+                      bg-color="white"
+                      :error="v$.celular.$error"
+                      :error-messages="v$.celular.$errors.map(e => e.$message)"
+                      label="Celular"
+                      v-maska="'(##) # ####-####'"
+                      @blur="v$.celular.$touch()"
+                      v-model="form.celular"
                   />
                 </v-sheet>
               </v-col>
             </v-row>
+
             <v-text-field
-              variant="outlined"
-              bg-color="white"
-              :hide-details="true"
-              label="E-mail"
+                variant="outlined"
+                bg-color="white"
+                :error="v$.email.$error"
+                :error-messages="v$.email.$errors.map(e => e.$message)"
+                label="E-mail"
+                @blur="v$.email.$touch()"
+                v-model="form.email"
             />
+
             <v-row no-gutters>
               <v-col>
                 <v-sheet class="py-2 my-2">
                   <v-text-field
-                    variant="outlined"
-                    bg-color="white"
-                    :hide-details="true"
-                    label="CEP"
+                      variant="outlined"
+                      bg-color="white"
+                      :error="v$.cep.$error"
+                      :error-messages="v$.cep.$errors.map(e => e.$message)"
+                      label="CEP"
+                      v-maska="'#####-###'"
+                      @blur="v$.cep.$touch()"
+                      v-model="form.cep"
                   />
                 </v-sheet>
               </v-col>
               <v-col>
                 <v-sheet class="py-2 my-2">
                   <v-text-field
-                    variant="outlined"
-                    bg-color="white"
-                    :hide-details="true"
-                    label="Endereço"
+                      variant="outlined"
+                      bg-color="white"
+                      :error="v$.endereco.$error"
+                      :error-messages="v$.endereco.$errors.map(e => e.$message)"
+                      label="Endereço"
+                      @blur="v$.endereco.$touch()"
+                      v-model="form.endereco"
                   />
                 </v-sheet>
               </v-col>
             </v-row>
+
             <v-row no-gutters>
               <v-col>
                 <v-sheet class="py-2 my-2">
                   <v-text-field
-                    variant="outlined"
-                    bg-color="white"
-                    :hide-details="true"
-                    label="Cidade"
+                      variant="outlined"
+                      bg-color="white"
+                      :error="v$.cidade.$error"
+                      :error-messages="v$.cidade.$errors.map(e => e.$message)"
+                      label="Cidade"
+                      @blur="v$.cidade.$touch()"
+                      v-model="form.cidade"
                   />
                 </v-sheet>
               </v-col>
               <v-col>
                 <v-sheet class="py-2 my-2">
                   <v-text-field
-                    variant="outlined"
-                    bg-color="white"
-                    :hide-details="true"
-                    label="Estado"
+                      variant="outlined"
+                      bg-color="white"
+                      :error="v$.estado.$error"
+                      @blur="v$.estado.$touch()"
+                      :error-messages="v$.estado.$errors.map(e => e.$message)"
+                      label="Estado"
+                      v-model="form.estado"
                   />
                 </v-sheet>
               </v-col>
@@ -131,6 +162,7 @@
         </v-sheet>
         <div class="w-100 d-flex justify-center pa-6">
           <v-btn
+            @click="submitForm"
             color="light-blue-darken-4"
             class="w-100"
             text="Finalizar"
@@ -142,10 +174,14 @@
 </template>
 <script setup>
 
-import {computed} from "vue";
+import {computed, ref} from "vue";
 import {formatToBRL} from "../utils/index.js";
 import {useRouter} from "vue-router";
 import {useStore} from "vuex";
+import useVuelidate from "@vuelidate/core";
+import {email, helpers, maxLength, minLength, required} from "@vuelidate/validators";
+import { vMaska } from "maska/vue"
+import Swal from "sweetalert2";
 
 const store = useStore()
 
@@ -154,6 +190,62 @@ const cartTotalPrice = computed(() => store.getters['cart/totalPrice'])
 
 const removeItem = (id) => {
   store.dispatch('cart/removeFromCart', id)
+}
+
+const form = ref({
+  nomeCompleto: '',
+  cpf: '',
+  celular: '',
+  email: '',
+  cep: '',
+  endereco: '',
+  cidade: '',
+  estado: ''
+})
+
+const rules = {
+  nomeCompleto: { required: helpers.withMessage('Nome é obrigatório', required) },
+  cpf: {
+    required: helpers.withMessage('CPF é obrigatório', required),
+    minLength: helpers.withMessage('CPF deve ter 11 dígitos', minLength(14)),
+    maxLength: helpers.withMessage('CPF deve ter 11 dígitos', maxLength(14)),
+  },
+  celular: { required: helpers.withMessage('Celular é obrigatório', required) },
+  email: { required: helpers.withMessage('E-mail é obrigatório', required), email: helpers.withMessage('E-mail inválido', email) },
+  cep: { required: helpers.withMessage('CEP é obrigatório', required) },
+  endereco: { required: helpers.withMessage('Endereço é obrigatório', required) },
+  cidade: { required: helpers.withMessage('Cidade é obrigatória', required) },
+  estado: { required: helpers.withMessage('Estado é obrigatório', required) },
+}
+
+const v$ = useVuelidate(rules, form)
+
+function submitForm() {
+  v$.value.$touch()
+  if (!v$.value.$invalid) {
+    Swal.fire({
+      title: 'Obrigado!',
+      text: 'Sua compra foi finalizada com sucesso',
+      icon: 'success',
+      cancelButtonColor: 'white',
+      cancelButtonText: "Ir para loja",
+      showCancelButton: true,
+      showConfirmButton: false
+    }).then(() => {
+      router.push('/')
+      store.dispatch('cart/clearCart')
+    })
+  } else {
+    Swal.fire({
+      title: 'Atenção!',
+      text: 'Campos do formulário não preenchidos!',
+      icon: 'error',
+      showConfirmButton: false,
+      cancelButtonColor: 'white',
+      cancelButtonText: "FECHAR",
+      showCancelButton: true,
+    })
+  }
 }
 
 const getPosterUrl = (path) =>

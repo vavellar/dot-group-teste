@@ -9,6 +9,7 @@
         <v-text-field
           variant="outlined"
           bg-color="white"
+          :disabled="route.name !== 'Home'"
           :hide-details="true"
           placeholder="Pesquisa"
           append-inner-icon="mdi-magnify"
@@ -51,12 +52,14 @@
 import {computed, ref, watch} from "vue";
 import {useStore} from "vuex";
 import {debounce} from "lodash";
+import {useRoute} from "vue-router";
 
 const store = useStore()
 const cartCount = computed(() => store.getters['cart/itemCount'])
 const favoritesCount = computed(() => store.getters['favorites/favoritesCount'])
 
 const search = ref('')
+const route = useRoute()
 
 const searchMovies = () => {
   if (search.value.trim()) {

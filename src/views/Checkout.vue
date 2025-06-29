@@ -12,7 +12,7 @@
       </div>
     </div>
     <v-row no-gutters v-else>
-      <v-col>
+      <v-col cols="12" md="6">
         <v-sheet class="pa-2 ma-2">
           <h3>Finalizar compra</h3>
           <div class="mt-4">

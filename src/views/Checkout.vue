@@ -269,20 +269,6 @@ const getPosterUrl = (path) =>
 const router = useRouter()
 const { disableScroll, enableScroll } = useBodyScroll()
 
-onBeforeMount(() => {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-  });
-})
-
-onMounted(() => {
-  disableScroll()
-})
-
-onBeforeUnmount(() => {
-  enableScroll()
-})
 </script>
 
 <style scoped>
@@ -290,5 +276,9 @@ onBeforeUnmount(() => {
   height: 50vh;
   overflow-y: scroll;
   overflow-x: hidden;
+}
+
+.cart-grid {
+  height: 80vh;
 }
 </style>

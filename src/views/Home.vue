@@ -35,16 +35,9 @@ import {onMounted, onBeforeUnmount, ref, computed} from "vue"
 import EmptyState from "@/components/EmptyState.vue";
 const store = useStore()
 
-onMounted(() => {
-  store.dispatch('movies/init')
-})
-
-onBeforeUnmount(() => {
-  store.dispatch('movies/destroy')
-})
-
 const movies = computed(() => store.getters['movies/movies'])
 const loading = computed(() => store.getters['movies/isLoading'])
+
 
 </script>
 

@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import {computed, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import store from "@/store/index.js";
 import {useBodyScroll} from "@/composables/useBodyScroll.js";
 
@@ -61,6 +61,9 @@ const color = computed(() => store.state.snackbar.color)
 const timeout = computed(() => store.state.snackbar.timeout)
 const location = computed(() => store.state.snackbar.location)
 
+onMounted(() => {
+  store.dispatch('movies/init')
+})
 </script>
 
 <style>

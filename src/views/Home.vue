@@ -21,10 +21,10 @@
         />
       </v-col>
     </v-row>
+    <div class="text-center d-flex flex-column align-center justify-center fill-height" v-if="loading">
+      <v-progress-circular indeterminate color="blue" :size="80"></v-progress-circular>
+    </div>
   </v-container>
-  <div class="text-center d-flex flex-column align-center justify-center fill-height" v-if="loading">
-    <v-progress-circular indeterminate color="blue" :size="80"></v-progress-circular>
-  </div>
 </template>
 
 

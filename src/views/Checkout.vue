@@ -7,9 +7,8 @@
       />
       <div class="d-flex justify-center">
         <v-btn
-          class="mt-4"
           color="secondary"
-          text="Volte para a loja e adicione novos items no carrinho"
+          text="Voltar para a loja"
           @click="router.push('/')"
         />
       </div>
@@ -20,8 +19,7 @@
           <h3>Finalizar compra</h3>
           <div class="mt-4">
             <v-text-field
-                variant="outlined"
-                bg-color="white"
+                variant="solo-filled"
                 :error="v$.nomeCompleto.$error"
                 :error-messages="v$.nomeCompleto.$errors.map(e => e.$message)"
                 label="Nome Completo"
@@ -29,13 +27,11 @@
                 v-model="form.nomeCompleto"
                 @blur="v$.nomeCompleto.$touch()"
             />
-
             <v-row no-gutters>
               <v-col>
                 <v-sheet class="py-2 my-2">
                   <v-text-field
-                      variant="outlined"
-                      bg-color="white"
+                      variant="solo-filled"
                       :clearable="true"
                       :error="v$.cpf.$error"
                       :error-messages="v$.cpf.$errors.map(e => e.$message)"
@@ -50,8 +46,7 @@
                 <v-sheet class="py-2 my-2">
                   <v-text-field
                       :clearable="true"
-                      variant="outlined"
-                      bg-color="white"
+                      variant="solo-filled"
                       :error="v$.celular.$error"
                       :error-messages="v$.celular.$errors.map(e => e.$message)"
                       label="Celular"
@@ -64,8 +59,7 @@
             </v-row>
 
             <v-text-field
-                variant="outlined"
-                bg-color="white"
+                variant="solo-filled"
                 :clearable="true"
                 :error="v$.email.$error"
                 :error-messages="v$.email.$errors.map(e => e.$message)"
@@ -79,8 +73,7 @@
                 <v-sheet class="py-2 my-2">
                   <v-text-field
                       :clearable="true"
-                      variant="outlined"
-                      bg-color="white"
+                      variant="solo-filled"
                       @click:clear="() => {
                         form.endereco = null
                         form.cidade = null
@@ -102,8 +95,7 @@
                 <v-sheet class="py-2 my-2">
                   <v-text-field
                       :clearable="true"
-                      variant="outlined"
-                      bg-color="white"
+                      variant="solo-filled"
                       :error="v$.endereco.$error"
                       :error-messages="v$.endereco.$errors.map(e => e.$message)"
                       label="Endereço"
@@ -119,8 +111,7 @@
                 <v-sheet class="py-2 my-2">
                   <v-text-field
                       :clearable="true"
-                      variant="outlined"
-                      bg-color="white"
+                      variant="solo-filled"
                       :error="v$.cidade.$error"
                       :error-messages="v$.cidade.$errors.map(e => e.$message)"
                       label="Cidade"
@@ -133,8 +124,7 @@
                 <v-sheet class="py-2 my-2">
                   <v-text-field
                       :clearable="true"
-                      variant="outlined"
-                      bg-color="white"
+                      variant="solo-filled"
                       :error="v$.estado.$error"
                       @blur="v$.estado.$touch()"
                       :error-messages="v$.estado.$errors.map(e => e.$message)"
@@ -182,7 +172,7 @@
             </div>
           </v-container>
           <v-divider class="mb-2"></v-divider>
-          <div class="d-flex justify-lg-space-between px-4">
+          <div class="d-flex justify-space-between px-4">
             <h2>Total</h2>
             <h2>
               {{ formatToBRL(cartTotalPrice) }}

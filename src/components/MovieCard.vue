@@ -18,6 +18,7 @@
       >
         <v-icon>{{ isFavorited ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
       </v-btn>
+      <p class="release_date font-weight-bold">{{ convertDate(movie.release_date) }}</p>
     </div>
 
     <v-card-actions class="d-flex flex-column flex-grow-1 justify-between px-4 py-3">
@@ -83,6 +84,14 @@ const toggleFavorite = (movie) => {
     })
   }
 }
+
+const convertDate = (date) => {
+  if (!date) return
+  const dateFormatted = new Date(date + "T00:00:00");
+
+  const options = { day: 'numeric', month: 'long', year: 'numeric' };
+  return new Intl.DateTimeFormat('pt-BR', options).format(dateFormatted);
+}
 </script>
 
 <style scoped>
@@ -107,5 +116,19 @@ const toggleFavorite = (movie) => {
 
 .favorite-btn:hover {
   background-color: rgba(255, 255, 255, 1);
+}
+
+.release_date {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 1rem;
+  white-space: nowrap; /* impede quebra de linha, opcional */
+  text-align: center;
 }
 </style>

@@ -12,13 +12,13 @@
         icon="mdi-heart-off"
     />
     <div v-else>
-      <v-toolbar flat>
+      <v-toolbar flat class="favorites_header d-flex justify-lg-space-between position-absolute">
         <v-toolbar-title>Favoritos</v-toolbar-title>
-        <v-spacer></v-spacer>
+        <v-btn text="Limpar" @click="clear"/>
       </v-toolbar>
 
       <v-sheet class="flex-grow-1 overflow-y-auto">
-        <v-list class="mb-16">
+        <v-list class="mb-16 mt-8">
           <div
               v-for="(item) in favorites"
               :key="item.id"
@@ -80,6 +80,9 @@ const emit = defineEmits(['update:open'])
 
 const favorites = computed(() => store.getters['favorites/favorites'])
 
+const clear = () => {
+  store.dispatch('favorites/clearFavorites')
+}
 const removeItem = (movie) => {
   store.dispatch('favorites/removeFavorite', movie)
 }
@@ -91,3 +94,9 @@ const addToCart = (movie) => {
 const getPosterUrl = (path) =>
   path ? `https://image.tmdb.org/t/p/w500${path}` : 'https://via.placeholder.com/500x750?text=No+Image'
 </script>
+
+<style>
+.favorites_header {
+  z-index: 10;
+}
+</style>

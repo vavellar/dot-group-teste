@@ -1,20 +1,22 @@
 <template>
-  <v-app-bar app color="teal-lighten-4">
-    <div style="width: 100%" class="d-flex align-center justify-space-between fill-height">
+  <v-app-bar app color="#1F2937">
+    <div  class="d-flex align-center justify-space-between fill-height w-100">
       <div class="d-flex align-center">
         <v-btn class="ml-8" @click="router.push('/')">LOGO</v-btn>
       </div>
 
       <div class="d-flex align-center flex-grow-1 justify-center px-4">
         <v-text-field
-          variant="outlined"
-          bg-color="white"
+          variant="default"
           :disabled="route.name !== 'Home'"
           :hide-details="true"
           placeholder="Pesquisa"
+          @click:clear="store.dispatch('movies/init')"
           append-inner-icon="mdi-magnify"
+          :clearable="true"
           v-model="search"
-          style="max-width: 500px; width: 100%;"
+          max-width="500"
+          width="100%"
         ></v-text-field>
       </div>
 
@@ -65,15 +67,17 @@ const router = useRouter()
 const searchMovies = () => {
   if (search.value.trim()) {
     store.dispatch('movies/fetchMoviesByName', search.value.trim())
-  } else {
-    store.dispatch('movies/reset')
-    store.dispatch('movies/init')
   }
 }
 
 const debouncedSearch = debounce(searchMovies, 500)
 
-watch(() => search.value, () => {
+watch(() => search.value, (value) => {
+  if (!value) {
+    store.dispatch('movies/reset')
+    store.dispatch('movies/init')
+    return
+  }
   debouncedSearch()
 })
 </script>

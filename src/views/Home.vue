@@ -4,6 +4,9 @@
       text="Não foram encontrados resultados para sua busca."
       icon="mdi-magnify-close"
   />
+  <div class="text-center d-flex flex-column align-center justify-center fill-height" v-else-if="loading">
+    <v-progress-circular indeterminate color="blue" :size="80"></v-progress-circular>
+  </div>
   <v-container v-else>
     <v-row
       dense
@@ -21,9 +24,6 @@
         />
       </v-col>
     </v-row>
-    <div class="text-center d-flex flex-column align-center justify-center fill-height" v-if="loading">
-      <v-progress-circular indeterminate color="blue" :size="80"></v-progress-circular>
-    </div>
   </v-container>
 </template>
 

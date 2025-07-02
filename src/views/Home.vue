@@ -4,12 +4,8 @@
       text="Não foram encontrados resultados para sua busca."
       icon="mdi-magnify-close"
   />
-  <div class="text-center d-flex flex-column align-center justify-center fill-height" v-else-if="loading">
-    <v-progress-circular indeterminate color="blue" :size="80"></v-progress-circular>
-  </div>
-  <v-container v-else>
+  <v-container v-if="movies.length > 0">
     <v-row
-      dense
       justify="center"
     >
       <v-col
@@ -25,6 +21,9 @@
       </v-col>
     </v-row>
   </v-container>
+  <div class="text-center d-flex flex-column align-center justify-center fill-height" v-else-if="loading">
+    <v-progress-circular indeterminate color="blue" :size="80"></v-progress-circular>
+  </div>
 </template>
 
 
